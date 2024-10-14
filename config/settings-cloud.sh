@@ -2,22 +2,24 @@
 # CockroachDB Cloud Configuration
 #################################
 
-# Your CockroachCloud cluster ID, see: https://cockroachlabs.cloud/cluster/<CLUSTER_ID>
-CC_CLUSTERID=YOUR_CLUSTER_ID
-# Database host (regional LB) used to build URLs
-CC_HOST=YOUR_CLUSTER_NAME-qmg.aws-eu-north-1.cockroachlabs.cloud:26257
-# Path to SSL root cert (download from https://cockroachlabs.cloud/clusters/<CLUSTER_ID>/cert), ex:
-#   curl --create-dirs -o $HOME/Library/CockroachCloud/certs/YOUR_CC_UUID/YOUR_CLUSTER_NAME-ca.crt 'https://cockroachlabs.cloud/clusters/YOUR_CLUSTER_ID/cert'
-CC_SSL_ROOT_CERT=$HOME/Library/CockroachCloud/certs/YOUR_CC_UUID/YOUR_CLUSTER_NAME-ca.crt
-# CockroachCloud API key, see https://www.cockroachlabs.com/docs/cockroachcloud/managing-access#create-api-keys
-CC_API_KEY=YOUR_API_KEY
-# Admin endpoint URL
-ADMIN_URL="https://admin-YOUR_CLUSTER_NAME-qmg.cockroachlabs.cloud:8080"
+# Hints:
+# - You can find all settings below in the CC console (https://cockroachlabs.cloud/cluster/<CLUSTER_ID>).
+# - Don't forget to add your network to the IP Allowlist
 
-# Hint: Don't forget to add IP Allowlist in CC console
+# Your CockroachCloud cluster UUID, pick from URL: https://cockroachlabs.cloud/cluster/<CLUSTER_ID>
+CC_CLUSTERID=YOUR_CLUSTER_ID
+# Database host and port used to build URLs (pick closest region), for ex:
+CC_HOST=hugin-qmg.aws-eu-north-1.cockroachlabs.cloud:26257
+# Path to local SSL root cert (download from https://cockroachlabs.cloud/clusters/<CLUSTER_ID>/cert), for ex:
+#   curl --create-dirs -o $HOME/Library/CockroachCloud/certs/00000000-0000-0000-0000-000000000000/hugin-ca.crt 'https://cockroachlabs.cloud/clusters/<YOUR_CLUSTER_ID>/cert'
+CC_SSL_ROOT_CERT=$HOME/Library/CockroachCloud/certs/YOUR_CC_UUID/hugin-ca.crt
+# CockroachCloud API key, see: https://www.cockroachlabs.com/docs/cockroachcloud/managing-access#create-api-keys
+CC_API_KEY=YOUR_API_KEY
+# Admin endpoint URL (pick same region as for CC_HOST), for ex:
+ADMIN_URL="https://admin-hugin-qmg.cockroachlabs.cloud:8080"
 
 #####################################################
-# Modify below only if needed (local port collisions)
+# Modify below ONLY if needed (local port collisions)
 #####################################################
 
 ##################

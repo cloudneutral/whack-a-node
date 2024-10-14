@@ -13,15 +13,17 @@ rpcportbase=25258
 sqlportbase=26258
 # Base port number for HTTP traffic (leaving 8080 for LB)
 httpportbase=8081
-# Cockroach version to download
-# https://www.cockroachlabs.com/docs/releases/?filters=mac
+# Cockroach version to download with install command:
+#   https://www.cockroachlabs.com/docs/releases/?filters=mac
 version="v24.2.3.darwin-10.9-amd64"
 
-# Each item in selected zone array counts as one node.
-# The exiting haproxy.cfg file is pre-configured for 9 nodes and
-# also works for anything less than 9 nodes.
+# Each item in selected zone array below counts as one node.
+# The exiting haproxy.cfg file is pre-configured for 18 nodes
+# but works for anything less as well.
 
-# 18 nodes, 6 regions, 2 super regions
+# 3 nodes by default up to 18 nodes in 6 regions and 2 potential super regions.
+# Locality flags can be anything, as long as it follows the key/value tuple syntax:
+#   https://www.cockroachlabs.com/docs/v24.2/cockroach-start.html#locality
 LOCALITY_ZONE=(
   'region=eu-north-1,zone=eu-north-1a'
   'region=eu-north-1,zone=eu-north-1b'

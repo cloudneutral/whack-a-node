@@ -1,3 +1,7 @@
+--
+-- Baseline cluster settings (optional)
+--
+
 SET CLUSTER SETTING diagnostics.reporting.enabled = false;
 SET CLUSTER SETTING server.shutdown.initial_wait = '8s';
 SET CLUSTER SETTING server.remote_debugging.mode = 'any';

@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://YOUR_CLUSTER_NAME-qmg.aws-eu-north-1.cockroachlabs.cloud:26257/?sslmode=require&sslrootcert=$HOME/Library/CockroachCloud/certs/YOUR_CC_UUID/YOUR_CLUSTER_NAME-ca.crt
+    url: jdbc:postgresql://YOUR_CLUSTER_NAME-qmg.aws-eu-north-1.cockroachlabs.cloud:26257/defaultdb?sslmode=require&sslrootcert=$HOME/Library/CockroachCloud/certs/YOUR_CC_UUID/YOUR_CLUSTER_NAME-ca.crt
     username: craig
     password: cockroach
 #############################

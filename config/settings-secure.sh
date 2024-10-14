@@ -8,7 +8,7 @@ SH_LB_URL=http://localhost:7070
 ADMIN_URL=https://localhost:443
 
 #####################################################
-# Modify below only if needed (local port collisions)
+# Modify below ONLY if needed (local port collisions)
 #####################################################
 
 ##################
