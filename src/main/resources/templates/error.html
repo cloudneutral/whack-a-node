@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>Whack-a-node</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+    <link href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/main.css" rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/theme :: theme}"></div>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<div class="container py-3">
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">
+            Oh Snap!
+        </h4>
+
+        <hr/>
+
+        <p th:if="${url}">
+            <b>Page:</b>
+            <code th:text="${url}">Page URL</code>
+        </p>
+
+        <p th:if="${path}">
+            <b>Path:</b>
+            <code th:text="${path}">Path</code>
+        </p>
+
+        <p th:if="${timestamp}">
+            <b>Occurred:</b>
+            <code th:text="${timestamp}">Timestamp</code>
+        </p>
+
+        <p th:if="${status}">
+            <b>Response Status:</b>
+            <code th:text="${status}">status-code</code>
+        </p>
+
+        <p th:if="${message}">
+            <b>Message:</b>
+            <code th:text="${message}">Exception</code>
+        </p>
+
+        <p th:if="${exception}">
+            <b>Cause:</b>
+            <code th:text="${exception}">Exception</code>
+        </p>
+
+<!--
+        <div th:if="${trace}">
+            <b>Trace:</b>
+            <code th:text="${trace}">Exception</code>
+        </div>
+-->
+
+        <p th:unless="${exception}">
+            Cause unknown (no exception details available)</p>
+
+        <hr>
+        <a role="button" class="btn btn-primary" th:href="@{/}">Home</a>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://code.jquery.com/ui/1.13/jquery-ui.js"></script>
+<script src="https://code.jquery.com/color/jquery.color-2.2.0.js"></script>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="js/color-modes.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+########################
+# Spring boot properties
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+########################
+spring:
+  profiles:
+    active: dev,insecure
+  output:
+    ansi:
+      enabled: always
+  ##################################
+  jackson:
+    serialization:
+      indent_output: true
+      write_dates_as_timestamps: false
+    deserialization:
+      fail_on_unknown_properties: false
+      fail_on_ignored_properties: false
+    default-property-inclusion: non_null
+    locale: en_US
+  #############################
+  mvc:
+    problemdetails:
+      enabled: false
+  #############################
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: whack-a-node
+      auto-commit: true
+      # Pool cap
+      maximum-pool-size: 64
+      # No idle conns
+      minimum-idle: 0
+      # Negative bypass pool warmup
+      initialization-fail-timeout: -1
+      # Max time for pool to wait on new conn
+      connection-timeout: 3000
+      # Max time for pool to wait on conn validation
+      validation-timeout: 5000
+      # Must be lower than max-lifetime, lowest is 10s
+      idle-timeout: 10000
+      # Lowest possible is 30s
+      max-lifetime: 30000
+#############################
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: env,info,health,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  health:
+    defaults:
+      enabled: true
+    db:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+#############################
+logging:
+  pattern:
+    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) [%t] %clr([%logger{39}]){cyan} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+#############################
+server:
+  port: 9090
+  error:
+    whitelabel:
+      enabled: false
+    path: /error
+    include-exception: true
+    include-message: always
+    include-stacktrace: always
+    include-binding-errors: always
+#############################
+application:
+  scriptPath: ${user.dir}
+  disruptionSpecificationPath: ${user.dir}/.disruption.json
+  adminUrl: http://localhost:8080

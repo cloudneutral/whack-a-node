@@ -1,0 +1,17 @@
+.binaries/
+.certs/
+.datafiles/
+.idea/
+target/
+*.iml
+*.ipr
+*.iws
+*.log
+*.csv
+*.pid
+.disruption.json
+whackanode.jar
+.DS_Store
+.DS_Store?
+Thumbs.db
+/bash.lnk

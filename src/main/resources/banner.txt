@@ -1,0 +1,8 @@
+${AnsiColor.BRIGHT_YELLOW}
+──▄──▄────▄▀       _       ____               __                                     __
+───▀▄─█─▄▀▄▄▄     | |     / / /_  ____ ______/ /__      ____ _      ____  ____  ____/ /__
+▄██▄████▄██▄▀█▄   | | /| / / __ \/ __ `/ ___/ //_/_____/ __ `/_____/ __ \/ __ \/ __  / _ \
+─▀▀─█▀█▀▄▀███▀    | |/ |/ / / / / /_/ / /__/ ,< /_____/ /_/ /_____/ / / / /_/ / /_/ /  __/
+──▄▄▀─█──▀▄▄      |__/|__/_/ /_/\__,_/\___/_/|_|      \__,_/     /_/ /_/\____/\__,_/\___/
+${AnsiColor.BRIGHT_GREEN}${application.title}${application.formatted-version} powered by Spring Boot${spring-boot.formatted-version}
+${AnsiColor.BRIGHT_GREEN}Active profiles: ${AnsiColor.BRIGHT_YELLOW}${spring.profiles.active}${AnsiColor.DEFAULT}

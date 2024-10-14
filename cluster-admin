@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Do not modify this file (see cluster-admin.cfg)
+
+case "$OSTYPE" in
+  darwin*)
+        rootdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+        selfname=$(basename "$(readlink -f "${BASH_SOURCE[0]}")")
+        ;;
+  *)
+        rootdir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+        selfname=$(basename "$(readlink -f "${BASH_SOURCE[0]}")")
+        ;;
+esac
+
+scriptsdir="${rootdir}/scripts"
+configdir="${rootdir}/config"
+installdir="${rootdir}/.binaries"
+certsdir="${rootdir}/.certs"
+datadir="${rootdir}/.datafiles"
+
+source "${configdir}/settings.sh"
+source "${scriptsdir}/core_functions.sh"
+source "${scriptsdir}/core_commands.sh"
+
+case "$DEPLOY_OPTION" in
+  cloud)
+    ;;
+  sh)
+    source "${scriptsdir}/local_functions.sh"
+    source "${scriptsdir}/local_commands.sh"
+    ;;
+  *)
+    echo "Unknown or missing deploy option"
+    exit 1
+esac
+
+if [ ! "$(command -v curl 2> /dev/null)" ]; then
+	echo -e "[ FAIL ] Curl is not installed"
+	exit 1
+fi
+
+if [ "$(whoami)" == "root" ]; then
+    echo -e "[ FAIL ] Do NOT run as root!"
+    exit 1
+fi
+
+mkdir -p ${datadir}
+
+core_getopt.sh $*
