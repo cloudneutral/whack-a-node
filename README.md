@@ -1,68 +1,72 @@
-[![Java CI with Maven](https://github.com/cloudneutral/whack-a-node/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/cloudneutral/whack-a-node/actions/workflows/maven.yml)
+<p align="center">
+	<a href="https://github.com/cloudneutral/whack-a-node"><img src=".github/logo.png" alt="">
+	<a href="https://github.com/cloudneutral/whack-a-node/actions/workflows/maven.yml"><img src="https://github.com/cloudneutral/whack-a-node/actions/workflows/maven.yml/badge.svg?branch=main" alt="">
+</p>
 
 <!-- TOC -->
 * [About](#about)
+  * [Main features](#main-features)
+  * [Compatibility](#compatibility)
   * [How it works](#how-it-works)
   * [Screenshots](#screenshots)
 * [Terms of Use](#terms-of-use)
-* [Building and Running](#building-and-running)
+* [Building](#building-)
   * [Prerequisites](#prerequisites)
   * [Install the JDK](#install-the-jdk)
-  * [Building](#building)
-    * [Clone the project](#clone-the-project)
-    * [Build the artifacts](#build-the-artifacts)
+  * [Clone the project](#clone-the-project)
 * [Configuration](#configuration)
 * [Running](#running)
-  * [Insecure Self-Hosted Configuration](#insecure-self-hosted-configuration)
-  * [Secure Self-Hosted Configuration](#secure-self-hosted-configuration)
-  * [Cockroach Cloud Configuration](#cockroach-cloud-configuration)
-* [Future Work](#future-work)
+  * [Local Cluster Configuration](#local-cluster-configuration)
+  * [CockroachDB Cloud Configuration](#cockroachdb-cloud-configuration)
 <!-- TOC -->
 
 # About
 
-<img align="left" src="logo.png" width="128" /> Whack-a-node (WAN) is a tool for 
-controlling and visualizing CockroachDB cluster failures and the impact on application
-workloads. The main features include:
+[Whack-a-node](https://github.com/cloudneutral/whack-a-node) is a simple graphical
+and command-line tool for controlling and visualizing CockroachDB cluster failures 
+and its impact on application workloads. 
 
-- Visualize cluster health
-- Visualize client-side workload impact on disruptions
-- Push-button feature for node disruption and recovery
+## Main features
 
-In more detail, it supports the following platforms/versions:
+The main features include:
+
+- Visualize cluster health in a web UI.
+- Visualize client-side workload impact during disruptions.
+- Push-button node disruption and recovery.
+- Quick, simple deployment and management of local CockroachDB clusters.
+
+Landing page showing the cluster layout and node status:
+
+![ui1](.github/ui-1.png)
+
+Listing optional client side mini-workloads against the database:
+
+![ui2](.github/ui-2.png)
+
+## Compatibility
+
+This tool supports the following platforms/versions:
 
 - CockroachDB Cloud v22.2+
   - Requires a feature flag enabled for the organization (file a support request) 
-- CockroachDB Self-Hosted v22.2+
-  - Local or remote (local setup scripts available)
+- CockroachDB Local Self-Hosted v22.2+
   - Secure or insecure mode
+  - No license key needed
 - MacOS (main platform)
 - Linux
 
 ## How it works
 
-Whack-a-node has two main parts: 
+Whack-a-node is made of: 
 
 1. A spring-boot web app for the visuals (with a REST API) 
-1. Bash scripts for retrieving cluster status, causing disruptions, recover nodes etc.
+1. Bash scripts for retrieving cluster status and details, causing disruptions, 
+recover nodes, etc.
+2. Bash scripts for quick and easy installing and configuring of a local CockroachDB cluster.
 
-In addition, there are bash scripts also for installing and configuring a local 
-CockroachDB cluster.
-
-The scripts can be used independently of the web app. The web app uses the bash 
-scripts to pass commands to the CockroachDB cluster and JDBC to run simple 
-opt-in workloads. The web app can disrupt and recover independent nodes both
-in self-hosted clusters and Cockroach Cloud.
-
-## Screenshots
-
-Landing page showing the cluster layout:
-
-![ui1](.github/ui-1.png)
-
-Listing client side mini-workloads against the database:
-
-![ui2](.github/ui-2.png)
+The command-line bash scripts can be used independently of the web app. 
+The web app in turn uses the bash scripts to pass commands to the CockroachDB cluster 
+and JDBC to run basic workloads. 
 
 # Terms of Use
 
@@ -71,10 +75,10 @@ own risk and Cockroach Labs makes no guarantees or warranties about its operatio
 
 See [MIT](LICENSE.txt) for terms and conditions.
 
-# Building and Running
+# Building 
 
 The only building needed is the visualization spring boot app that also 
-acts as the control plane (a single executable jar) and database client.
+acts as the control plane and database client.
 
 ## Prerequisites
 
@@ -96,104 +100,101 @@ Ubuntu:
 
     sudo apt-get install openjdk-17-jdk
 
-## Building
-
-### Clone the project
+## Clone the project
 
     git clone git@github.com:cloudneutral/whack-a-node.git && cd whack-a-node
 
-### Build the artifacts
-
-Maven is used to build the Java app component, bootstrapped by Tanuki Maven wrapper:
-
-    ./mvnw clean install
-
 # Configuration
 
-Every aspect of whack-a-node can be configured through the files 
-available in the `config` directory:
+Every aspect of whack-a-node can be configured through the files available in the `config` directory:
 
-1. [settings.sh](config/settings.sh) - Where you pick the cluster type (cloud or self-hosted).
-1. [settings-cloud.sh](config/settings-cloud.sh) - Settings for using an existing CockroachDB Cloud cluster (you can't create one through this tool).
-1. [settings-insecure.sh](config/settings-insecure.sh) - Settings for using an existing or new local CockroachDB self-hosted cluster in insecure mode.
-1. [settings-secure.sh](config/settings-secure.sh) - Settings for using an existing or new local CockroachDB self-hosted cluster in secure mode.
-1. [settings-local.sh](config/settings-local.sh) - Settings for a local CockroachDB cluster.
-1. [haproxy.cfg](config/haproxy.cfg) - Default HAProxy configuration for a local CockroachDB cluster.
+1. [settings-cloud.sh](config/settings-cloud.cfg) - Settings for using an existing CockroachDB Cloud cluster.
+1. [settings-insecure.sh](config/settings-insecure.cfg) - Settings for using a local CockroachDB self-hosted cluster in insecure mode.
+1. [settings-secure.sh](config/settings-secure.cfg) - Settings for using a local CockroachDB self-hosted cluster in secure mode.
+1. [settings-local.sh](config/settings-local.cfg) - Settings for creating and managing a local CockroachDB cluster.
+1. [settings-service.sh](config/settings-service.cfg) - Settings for the whack-a-node service.
+1. [haproxy.cfg](config/haproxy.cfg) - HAProxy configuration for local CockroachDB cluster.
+1. [init.sql](config/init.sql) - Init SQL statements (optional).
   
 More details are found in the configuration file comments. 
 
-Notice that the web app will use the same bash scripts when querying for cluster status, 
-causing disruption and so on. The application dependency is uni-directional, meaning that 
-you can use the scripts in isolation without using the visualization app.
-
 # Running
 
-To see the different commands, run:
+These instructions cover creating a local, self-hosted cluster or using CockroachDB Cloud.
 
-    chmod +x ./cluster-admin
-    ./cluster-admin
+## Local Cluster Configuration
 
-## Insecure Self-Hosted Configuration
+1. To get started with a local cluster, run:
 
-Getting started with a new, local self-hosted insecure cluster (default):
+       ./cluster-admin 
 
-    ./cluster-admin install
-    ./cluster-admin start-all
-    ./cluster-admin init
-    ./cluster-admin start-lb
-    ./cluster-admin start-service
-    ./cluster-admin open
+   Pick option `secure` or `insecure`. Alternatively, edit or delete the existing `settings.cfg`
+   and change `DEPLOY_MODE` to `secure|insecure`.
 
-The app should now be available at http://localhost:9090. You can 
-either use the app web ui or shell commands to kill and restart nodes.
+1. (optional) Edit [config/settings-secure.cfg](config/settings-secure.cfg) 
+or [config/settings-insecure.cfg](config/settings-insecure.cfg) and change the details if needed.
+The default settings are usually sufficient unless you have conflicting 
+network ports occupied.
 
-Running the inverse to shut things down:
+1. (optional) Edit [config/settings-local.cfg](config/settings-local.cfg) to tailor cluster listen ports, 
+locality flags etc.
 
-    ./cluster-admin stop-all
-    ./cluster-admin stop-lb
+1. (optional) Edit [config/haproxy.cfg](config/haproxy.cfg) to mirror any listen port changes you make. This 
+configuration is pre-configured for up to 18 local nodes but HAProxy automatically adjusts to anything less.
+
+1. [Secure mode] Install a CockroachDB binary, start the cluster, load balancer and the app:
+
+       ./cluster-admin install
+       ./cluster-admin certs
+       ./cluster-admin start-all
+       ./cluster-admin init
+       ./cluster-admin start-lb
+       ./cluster-admin start-service
+       ./cluster-admin login
+       ./cluster-admin open
+
+1. [Insecure mode] Install a CockroachDB binary, start the cluster, load balancer and the app:
+
+       ./cluster-admin install
+       ./cluster-admin start-all
+       ./cluster-admin init
+       ./cluster-admin start-lb
+       ./cluster-admin start-service
+       ./cluster-admin open
+
+Run the inverse to shut things down:
+
     ./cluster-admin stop-service
+    ./cluster-admin stop-lb
+    ./cluster-admin stop-all
 
-## Secure Self-Hosted Configuration
+## CockroachDB Cloud Configuration
 
-Edit [config/settings.sh](config/settings.sh) and change
-to source `settings-secure.sh`.
+1. To get started with an existing CockroachDB Cloud cluster, run:
+    
+       ./cluster-admin 
 
-Getting started with a new, local self-hosted secure cluster:
+    Pick option `cloud`. Alternatively, edit or delete the existing `settings.cfg`
+    and change `DEPLOY_MODE` to `cloud`.
+1. Edit [config/settings-cloud.cfg](config/settings-cloud.cfg) and change the credentials to match your cluster.
 
-    ./cluster-admin install
-    ./cluster-admin certs
-    ./cluster-admin start-all
-    ./cluster-admin init
-    ./cluster-admin start-lb
-    ./cluster-admin start-service
-    ./cluster-admin login
-    ./cluster-admin open
+    | Key              | Value                                                                                                                                           | Example                                           |
+    |------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------|
+    | CC_CLUSTERID     | Your cluster UUID, i.e: (https://cockroachlabs.cloud/cluster/<CLUSTER_ID>)                                                                      | 2bcef101-8881-4099-9a3c-5075a77d93e2              | 
+    | CC_SSL_ROOT_CERT | The CA root certificate for your [cluster](https://cockroachlabs.cloud/) stored locally.                                                        | (see CC console)                                  | 
+    | CC_API_KEY       | Create an [API key](https://www.cockroachlabs.com/docs/cockroachcloud/managing-access#create-api-keys) for the cluster and copy the secret key. | (secret key)                                      | 
+    | ADMIN_URL        | DB Console URL.                                                                                                                                 | https://admin-odin-qmg.cockroachlabs.cloud:8080   | 
+    | DB_HOST          | Database host name (pick closest region).                                                                                                       | odin-qmg.aws-eu-north-1.cockroachlabs.cloud:26257 | 
+    | DB_USER          | Database user name.                                                                                                                             | craig                                             | 
+    | DB_PASSWORD      | Database user password                                                                                                                          | cockroach                                         | 
 
-Now the app should be available at https://localhost. You can 
-either use the app web ui or shell commands to kill and restart nodes.
+1. Install a CockroachDB binary, login and start the app:
 
-## Cockroach Cloud Configuration
-
-1. Edit [config/settings.sh](config/settings.sh) and change to source `settings-cloud.sh`.
-1. Edit [config/settings-cloud.sh](config/settings-cloud.sh) and change the credentials to match your cluster.
-
-To authenticate, you need the CA root certificate for your [cluster](https://cockroachlabs.cloud/) stored locally:
-
-    curl --create-dirs -o $HOME/Library/CockroachCloud/certs/00000000-0000-0000-0000-000000000000/odin-ca.crt 'https://cockroachlabs.cloud/clusters/00000000-0000-0000-0000-000000000000/cert'
-
-Then install a CockroachDB binary, login and start the app with:
-
-    ./cluster-admin install
-    ./cluster-admin login
-    ./cluster-admin start-service
-    ./cluster-admin open
-
-# Future Work
-
-- [DONE] Send SQL traffic from app to observe app-side effects
-- Testing is incomplete for CC disruption/recovery.
-- Support other distributed DBs
+       ./cluster-admin install
+       ./cluster-admin login
+       ./cluster-admin start-service
+       ./cluster-admin open
 
 ---
 
-That is all, move out!
+That is all, carry on!
