@@ -25,4 +25,4 @@ fi
 
 fn_fail_check haproxy -D -f ${configdir}/haproxy.cfg -p .haproxy.pid
 
-fn_print_ok "Started (pid: $(<.haproxy.pid))"
+fn_print_ok "Started haproxy (pid: $(<.haproxy.pid))"

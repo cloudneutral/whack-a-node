@@ -10,4 +10,4 @@ fi
 kill -TERM $pid
 RETVAL=$?
 
-fn_print_ok "Stopped (pid: $pid) $RETVAL"
+fn_print_ok "Stopped service (pid: $pid) $RETVAL"

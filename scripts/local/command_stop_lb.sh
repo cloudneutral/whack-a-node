@@ -8,6 +8,6 @@ fi
 kill -TERM `cat .haproxy.pid`
 RETVAL=$?
 
-fn_print_ok "Stopped (pid: $(<.haproxy.pid))"
+fn_print_ok "Stopped haproxy (pid: $(<.haproxy.pid))"
 
 [ $RETVAL -eq 0 ] && rm -f .haproxy.pid

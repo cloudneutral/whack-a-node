@@ -1,9 +1,5 @@
 #!/bin/bash
 
-#if [ ! -f ${rootdir}/init.sql ]; then
-#  cat  ${configdir}/init.sql > ${rootdir}/init.sql
-#fi
-
 case "$SECURITY_MODE" in
   secure)
     ${installdir}/cockroach init --certs-dir=${certsdir} --host=${host}:${rpcportbase}
@@ -34,4 +30,4 @@ case "$SECURITY_MODE" in
     exit 1
 esac
 
-fn_print_ok
+fn_print_ok "Cluster initialized"
