@@ -69,9 +69,9 @@ case "${getopt}" in
     echo -e ""
     echo -e "${lightgreen}Service Commands${default}"
     {
-        echo -e "${green}start-service\t${default}      | Start the WAN service"
-        echo -e "${green}run-service\t${default}      | Run the WAN service"
-        echo -e "${green}stop-service\t${default}      | Stop the WAN service"
+        echo -e "${green}start-service\t${default}       | Start the WAN service"
+        echo -e "${green}run-service\t${default}       | Run the WAN service"
+        echo -e "${green}stop-service\t${default}       | Stop the WAN service"
     } | column -s $'\t' -t
 
 esac
