@@ -21,7 +21,7 @@
 
 # About
 
-<img  align="left" src=".github/logo.png" alt=""/> 
+<img  align="left" src=".github/logo.png" alt="" width="64"/> 
 
 [Whack-a-node](https://github.com/cloudneutral/whack-a-node) is a simple graphical
 and command-line tool for controlling and visualizing CockroachDB cluster failures 
@@ -189,15 +189,15 @@ Run the inverse to shut things down:
     and change `DEPLOY_MODE` to `cloud`.
 1. Edit [config/settings-cloud.cfg](config/settings-cloud.cfg) and change the credentials to match your cluster.
 
-    | Key              | Value                                                                                                                                           | Example                                           |
-    |------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------|
-    | CC_CLUSTERID     | Your cluster UUID, i.e: (https://cockroachlabs.cloud/cluster/<CLUSTER_ID>)                                                                      | 2bcef101-8881-4099-9a3c-5075a77d93e2              | 
-    | CC_SSL_ROOT_CERT | The CA root certificate for your [cluster](https://cockroachlabs.cloud/) stored locally.                                                        | (see CC console)                                  | 
-    | CC_API_KEY       | Create an [API key](https://www.cockroachlabs.com/docs/cockroachcloud/managing-access#create-api-keys) for the cluster and copy the secret key. | (secret key)                                      | 
-    | ADMIN_URL        | DB Console URL.                                                                                                                                 | https://admin-odin-qmg.cockroachlabs.cloud:8080   | 
-    | DB_HOST          | Database host name (pick closest region).                                                                                                       | odin-qmg.aws-eu-north-1.cockroachlabs.cloud:26257 | 
-    | DB_USER          | Database user name.                                                                                                                             | craig                                             | 
-    | DB_PASSWORD      | Database user password                                                                                                                          | cockroach                                         | 
+    | Key              | Value                                                                                                                                           | Example                                                 |
+    |------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------|
+    | CC_CLUSTERID     | Your cluster UUID, i.e: (https://cockroachlabs.cloud/cluster/<CLUSTER_ID>)                                                                      | (see CC console)                                        | 
+    | CC_SSL_ROOT_CERT | The CA root certificate for your [cluster](https://cockroachlabs.cloud/) stored locally.                                                        | (see CC console)                                        | 
+    | CC_API_KEY       | Create an [API key](https://www.cockroachlabs.com/docs/cockroachcloud/managing-access#create-api-keys) for the cluster and copy the secret key. | (secret key)                                            | 
+    | ADMIN_URL        | DB Console URL.                                                                                                                                 | https://admin-my-cluster-qmg.cockroachlabs.cloud:8080   | 
+    | DB_HOST          | Database host name (pick closest region).                                                                                                       | my-cluster-qmg.aws-eu-north-1.cockroachlabs.cloud:26257 | 
+    | DB_USER          | Database user name.                                                                                                                             | craig                                                   | 
+    | DB_PASSWORD      | Database user password                                                                                                                          | cockroach                                               | 
 
 1. Install a CockroachDB binary, login and start the app:
 
