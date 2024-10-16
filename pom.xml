@@ -52,6 +52,14 @@
         <url>https://github.com/cloudneutral/whack-a-node/issues</url>
     </issueManagement>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/cloudneutral/whack-a-node</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -197,6 +205,20 @@
                             <Implementation-Version>${project.version}</Implementation-Version>
                         </manifestEntries>
                     </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.amashchenko.maven.plugin</groupId>
+                <artifactId>gitflow-maven-plugin</artifactId>
+                <version>1.21.0</version>
+                <configuration>
+                    <fetchRemote>false</fetchRemote>
+                    <verbose>true</verbose>
+                    <gitFlowConfig>
+                        <!-- Single branch model -->
+                        <productionBranch>main</productionBranch>
+                        <developmentBranch>main</developmentBranch>
+                    </gitFlowConfig>
                 </configuration>
             </plugin>
         </plugins>

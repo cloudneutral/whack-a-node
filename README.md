@@ -1,5 +1,4 @@
-<p align="center">
-	<a href="https://github.com/cloudneutral/whack-a-node"><img src=".github/logo.png" alt="">
+<p>	
 	<a href="https://github.com/cloudneutral/whack-a-node/actions/workflows/maven.yml"><img src="https://github.com/cloudneutral/whack-a-node/actions/workflows/maven.yml/badge.svg?branch=main" alt="">
 </p>
 
@@ -8,12 +7,12 @@
   * [Main features](#main-features)
   * [Compatibility](#compatibility)
   * [How it works](#how-it-works)
-  * [Screenshots](#screenshots)
 * [Terms of Use](#terms-of-use)
 * [Building](#building-)
   * [Prerequisites](#prerequisites)
   * [Install the JDK](#install-the-jdk)
   * [Clone the project](#clone-the-project)
+* [Download artifact](#download-artifact)
 * [Configuration](#configuration)
 * [Running](#running)
   * [Local Cluster Configuration](#local-cluster-configuration)
@@ -21,6 +20,8 @@
 <!-- TOC -->
 
 # About
+
+<img  align="left" src=".github/logo.png" alt=""/> 
 
 [Whack-a-node](https://github.com/cloudneutral/whack-a-node) is a simple graphical
 and command-line tool for controlling and visualizing CockroachDB cluster failures 
@@ -103,6 +104,16 @@ Ubuntu:
 ## Clone the project
 
     git clone git@github.com:cloudneutral/whack-a-node.git && cd whack-a-node
+
+# Download artifact
+
+If you prefer to use a packaged artifact (release or snapshot) rather than building, 
+see [GitHub Packages](https://github.com/cloudneutral/whack-a-node/packages/2285983?version=1.0.0-SNAPSHOT).
+
+Scroll to the current `TAR.GZ` file and copy the download URL, then run:
+
+    curl -o whack-a-node.tar.gz <paste-url-here>
+    tar xvf whack-a-node.tar.gz && cd whack-a-node
 
 # Configuration
 
