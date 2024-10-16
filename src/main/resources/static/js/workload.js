@@ -26,6 +26,13 @@ const chartP99 = new Chart(document.getElementById("chart-container-p99"), {
     },
     options: {
         scales: {
+            x: {
+                type: 'time',
+                time: {
+                    unit: 'minute'
+                },
+                parse: false
+            },
             y: {
                 title: {
                     display: true,
@@ -49,6 +56,13 @@ const chartTPS = new Chart(document.getElementById("chart-container-tps"), {
     },
     options: {
         scales: {
+            x: {
+                type: 'time',
+                time: {
+                    unit: 'minute'
+                },
+                parse: false
+            },
             y: {
                 title: {
                     display: true,

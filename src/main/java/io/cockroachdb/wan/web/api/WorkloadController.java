@@ -1,8 +1,8 @@
 package io.cockroachdb.wan.web.api;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -173,13 +173,10 @@ public class WorkloadController {
 
         {
             final Map<String, Object> headerElement = new HashMap<>();
-            List<String> labels = workloadManager
+            List<Long> labels = workloadManager
                     .getTimeSeriesInterval()
                     .stream()
-                    .map(instant -> {
-                        LocalTime time = LocalTime.ofInstant(instant, ZoneId.systemDefault());
-                        return "%02d:%02d".formatted(time.getMinute(), time.getSecond());
-                    })
+                    .map(Instant::toEpochMilli)
                     .toList();
             headerElement.put("data", labels.toArray());
             columnData.add(headerElement);

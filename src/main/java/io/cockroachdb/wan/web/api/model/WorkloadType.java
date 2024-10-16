@@ -1,7 +1,8 @@
 package io.cockroachdb.wan.web.api.model;
 
 public enum WorkloadType {
-    profile_insert("Profile insert"),
+    profile_insert("Profile singleton insert"),
+    profile_batch_insert("Profile batch insert"),
     profile_update("Profile point read and update"),
     profile_delete("Profile point read and delete"),
     profile_read("Profile point read"),
@@ -20,4 +21,4 @@ public enum WorkloadType {
     public String getDisplayValue() {
         return displayValue;
     }
-    }
+}

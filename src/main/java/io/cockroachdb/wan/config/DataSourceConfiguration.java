@@ -4,6 +4,8 @@ import java.sql.Connection;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -24,6 +26,8 @@ import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 public class DataSourceConfiguration {
     public static final String SQL_TRACE_LOGGER = "io.cockroachdb.SQL_TRACE";
 
+    private final Logger logger = LoggerFactory.getLogger(SQL_TRACE_LOGGER);
+
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -38,11 +42,15 @@ public class DataSourceConfiguration {
     }
 
     private DataSource loggingProxy(DataSource dataSource) {
+        if (!logger.isTraceEnabled()) {
+            return dataSource;
+        }
+
         DefaultQueryLogEntryCreator creator = new DefaultQueryLogEntryCreator();
         creator.setMultiline(true);
 
         SLF4JQueryLoggingListener listener = new SLF4JQueryLoggingListener();
-        listener.setLogger(SQL_TRACE_LOGGER);
+        listener.setLogger(logger);
         listener.setLogLevel(SLF4JLogLevel.TRACE);
         listener.setQueryLogEntryCreator(creator);
         listener.setWriteConnectionId(true);

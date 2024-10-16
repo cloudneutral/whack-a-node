@@ -25,13 +25,15 @@
                 <hr/>
 
                 <div class="d-inline-grid gap-2 d-md-flex justify-content-md-end">
+<!--
                     <button class="btn btn-sm btn-warning me-md-0" type="button"
                             data-bs-toggle="modal" data-bs-target="#confirmCancelAllModal">Cancel All
                     </button>
-                    <button class="btn btn-sm btn-danger me-md-0" type="button"
+-->
+                    <button class="btn btn-sm btn-outline-danger me-md-0" type="button"
                             data-bs-toggle="modal" data-bs-target="#confirmDeleteAllModal">Delete All
                     </button>
-                    <button class="btn btn-sm btn-primary me-md-0" type="button"
+                    <button class="btn btn-sm btn-outline-primary me-md-0" type="button"
                             data-bs-toggle="modal" data-bs-target="#addModal">Add Worker
                     </button>
                 </div>
@@ -76,13 +78,13 @@
                         <td scope="row">
                             <form method="POST" th:action="${workload.getRequiredLink('cancel').href}"
                                   th:if="${workload.hasLink('cancel')}">
-                                <button type="submit" name="submit" value="value" class="btn btn-sm btn-warning">
+                                <button type="submit" name="submit" value="value" class="btn btn-sm btn-outline-warning">
                                     Cancel
                                 </button>
                             </form>
                             <form method="POST" th:action="${workload.getRequiredLink('delete').href}"
                                   th:if="${workload.hasLink('delete')}">
-                                <button type="submit" name="submit" value="value" class="btn btn-sm btn-danger">
+                                <button type="submit" name="submit" value="value" class="btn btn-sm btn-outline-danger">
                                     Delete
                                 </button>
                             </form>
@@ -102,7 +104,11 @@
                         <th th:text="${aggregatedMetrics.success}" class="success">0</th>
                         <th th:text="${aggregatedMetrics.transientFail}" class="transientFail">0</th>
                         <th th:text="${aggregatedMetrics.nonTransientFail}" class="nonTransientFail">0</th>
-                        <th>-</th>
+                        <th>
+                            <button class="btn btn-sm btn-outline-warning" type="button"
+                                    data-bs-toggle="modal" data-bs-target="#confirmCancelAllModal">Cancel
+                            </button>
+                        </th>
                     </tr>
                     </tfoot>
                 </table>
@@ -207,6 +213,7 @@
 <script src="/webjars/sockjs-client/1.5.1/sockjs.min.js"></script>
 <script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
 <script src="/webjars/chartjs/4.4.3/dist/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
 <script type="importmap">
     {

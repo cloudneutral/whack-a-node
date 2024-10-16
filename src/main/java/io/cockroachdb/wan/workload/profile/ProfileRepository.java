@@ -5,16 +5,21 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ProfileRepository {
+    @Deprecated
     boolean isSchemaReady();
 
-    ProfileEntity insertProfile();
+    ProfileEntity insertProfileSingleton();
+
+    List<ProfileEntity> insertProfileBatch();
 
     void updateProfile(ProfileEntity profile);
 
+    @Deprecated
     void updateRandomProfile();
 
     void deleteProfileById(UUID id);
 
+    @Deprecated
     void deleteRandomProfile();
 
     List<ProfileEntity> findAll(int limit);
@@ -25,6 +30,7 @@ public interface ProfileRepository {
 
     Optional<ProfileEntity> findByRandomId();
 
+    @Deprecated
     Optional<ProfileEntity> findById(UUID id);
 
     void deleteAll();

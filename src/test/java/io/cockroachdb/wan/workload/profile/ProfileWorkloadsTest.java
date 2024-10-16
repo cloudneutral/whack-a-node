@@ -24,16 +24,29 @@ public class ProfileWorkloadsTest extends AbstractIntegrationTest {
         profileRepository.deleteAll();
     }
 
-    @Order(1)
+    @Order(0)
     @Test
     public void whenStartingInsertWorkload_thenExpectRows() {
-        List<ProfileEntity> before = profileRepository.findAll(1024);
+        List<ProfileEntity> before = profileRepository.findAll(65536);
 
         WorkloadEntity workload = profileWorkloads.addWorkload(WorkloadType.profile_insert, Duration.ofSeconds(5));
         workload.awaitCompletion();
 
-        List<ProfileEntity> after = profileRepository.findAll(1024);
+        List<ProfileEntity> after = profileRepository.findAll(65536);
         Assertions.assertEquals(before.size() + workload.getMetrics().getSuccess(), after.size());
+    }
+
+    @Order(1)
+    @Test
+    public void whenStartingBatchInsertWorkload_thenExpectRows() {
+        List<ProfileEntity> before = profileRepository.findAll(65536);
+
+        WorkloadEntity workload = profileWorkloads.addWorkload(WorkloadType.profile_batch_insert,
+                Duration.ofSeconds(5));
+        workload.awaitCompletion();
+
+        List<ProfileEntity> after = profileRepository.findAll(65536);
+        Assertions.assertEquals(before.size() + workload.getMetrics().getSuccess() * 32, after.size());
     }
 
     @Order(2)

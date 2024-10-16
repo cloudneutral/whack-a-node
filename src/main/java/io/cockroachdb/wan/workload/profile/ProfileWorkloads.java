@@ -78,6 +78,7 @@ public class ProfileWorkloads {
         Callable<?> callable =
                 switch (workloadType) {
                     case profile_insert -> createInsertWorkload();
+                    case profile_batch_insert -> createBatchInsertWorkload();
                     case profile_update -> createUpdateWorkload();
                     case profile_delete -> createDeleteWorkload();
                     case profile_read -> createReadWorkload();
@@ -111,7 +112,14 @@ public class ProfileWorkloads {
 
     private Callable<?> createInsertWorkload() {
         return () -> {
-            profileRepository.insertProfile();
+            profileRepository.insertProfileSingleton();
+            return 0;
+        };
+    }
+
+    private Callable<?> createBatchInsertWorkload() {
+        return () -> {
+            profileRepository.insertProfileBatch();
             return 0;
         };
     }

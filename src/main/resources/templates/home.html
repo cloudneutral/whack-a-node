@@ -28,7 +28,6 @@
                     <li>There are not enough available nodes in the cluster, check the <a target="_blank" th:if="${adminUrl}" th:href="${adminUrl}">DB Console</a>.</li>
                     <li>You are using a CockroachDB self-hosted cluster and have not started any nodes. Run <code>./cluster-admin start-all</code>.</li>
                     <li>You are using a CockroachDB Cloud or Secure cluster and have no valid access token. Run <code>./cluster-admin login</code> to authenticate.</li>
-                    <li>You are using the wrong credentials (connecting to a secure cluster in insecure mode, etc). Check <code>config/settings.sh</code>.</li>
                 </ul>
                 <p>This page will automatically refresh.</p>
             </div>

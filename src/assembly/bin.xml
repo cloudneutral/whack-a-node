@@ -49,10 +49,10 @@
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>.</outputDirectory>
             <includes>
                 <include>${project.groupId}:whackanode:jar:${project.version}</include>
             </includes>
+            <outputDirectory>.</outputDirectory>
             <outputFileNameMapping>whackanode.jar</outputFileNameMapping>
         </dependencySet>
     </dependencySets>

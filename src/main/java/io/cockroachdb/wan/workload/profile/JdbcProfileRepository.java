@@ -1,19 +1,20 @@
 package io.cockroachdb.wan.workload.profile;
 
-import java.io.IOException;
 import java.io.StringReader;
-import java.nio.charset.Charset;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.stream.IntStream;
+
+import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.JdbcUpdateAffectedIncorrectNumberOfRowsException;
@@ -21,16 +22,64 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StreamUtils;
 
 @Repository
 public class JdbcProfileRepository implements ProfileRepository {
-    private static final String JSON_DATA = "[{\"_id\":\"6708193b1d017dca757600d7\",\"index\":0,\"guid\":\"1dc80513-32df-4208-81a7-ae0dacff759e\",\"isActive\":false,\"balance\":\"$1,869.94\",\"picture\":\"http://placehold.it/32x32\",\"age\":22,\"eyeColor\":\"blue\",\"name\":\"Kerr Vaughan\",\"gender\":\"male\",\"company\":\"DYNO\",\"email\":\"kerrvaughan@dyno.com\",\"phone\":\"+1 (836) 574-2726\",\"address\":\"670 Crown Street, Guthrie, Minnesota, 6282\",\"about\":\"Dolor sit irure sint aliqua amet. Duis cillum et nulla non proident ullamco enim. Nostrud eu laborum magna quis et.\\r\\n\",\"registered\":\"2020-12-31T12:40:16 -01:00\",\"latitude\":78.883578,\"longitude\":24.826774,\"tags\":[\"Lorem\",\"elit\",\"est\",\"ullamco\",\"duis\",\"laborum\",\"cillum\"],\"friends\":[{\"id\":0,\"name\":\"Norman Weaver\"},{\"id\":1,\"name\":\"Mcintosh Vang\"},{\"id\":2,\"name\":\"Leigh Kirk\"}],\"greeting\":\"Hello, Kerr Vaughan! You have 8 unread messages.\",\"favoriteFruit\":\"strawberry\"}]";
+    private static final String JSON_DATA =
+            """
+            [
+              {
+                "_id": "670d522e1ad3f85502f44ecd",
+                "index": 0,
+                "guid": "5a44c0f0-a7a4-4cbc-8bdd-7d550d1e8d2a",
+                "isActive": true,
+                "balance": "$3,972.10",
+                "picture": "http://placehold.it/32x32",
+                "age": 31,
+                "eyeColor": "brown",
+                "name": "Kristi Blackburn",
+                "gender": "female",
+                "company": "INQUALA",
+                "email": "kristiblackburn@inquala.com",
+                "phone": "+1 (897) 482-3250",
+                "address": "793 Columbia Street, Westboro, Illinois, 2347",
+                "about": "Amet aliquip do cupidatat ex incididunt fugiat. Deserunt in pariatur ea do. Occaecat tempor do ad ut do Lorem non mollit occaecat enim occaecat. In non officia tempor amet pariatur est qui pariatur occaecat. Sunt sunt veniam reprehenderit commodo magna id. Consectetur ut ipsum mollit incididunt in amet sunt elit eiusmod irure ex. Pariatur aliquip aliqua voluptate est occaecat irure cillum esse.\\r\\n",
+                "registered": "2015-07-13T02:00:27 -02:00",
+                "latitude": -69.276752,
+                "longitude": 36.555489,
+                "tags": [
+                  "ad",
+                  "commodo",
+                  "do",
+                  "pariatur",
+                  "non",
+                  "tempor",
+                  "consequat"
+                ],
+                "friends": [
+                  {
+                    "id": 0,
+                    "name": "Edwards Richmond"
+                  },
+                  {
+                    "id": 1,
+                    "name": "Cynthia Potter"
+                  },
+                  {
+                    "id": 2,
+                    "name": "Yvonne Fowler"
+                  }
+                ],
+                "greeting": "Hello, Kristi Blackburn! You have 7 unread messages.",
+                "favoriteFruit": "apple"
+              }
+            ]
+            """;
 
     private final JdbcTemplate jdbcTemplate;
 
-    public JdbcProfileRepository(@Autowired JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public JdbcProfileRepository(@Autowired DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
@@ -40,7 +89,7 @@ public class JdbcProfileRepository implements ProfileRepository {
     }
 
     @Override
-    public ProfileEntity insertProfile() {
+    public ProfileEntity insertProfileSingleton() {
         ProfileEntity profile = new ProfileEntity();
         profile.setExpireAt(LocalDateTime.now());
         profile.setVersion(0);
@@ -59,10 +108,54 @@ public class JdbcProfileRepository implements ProfileRepository {
             return ps;
         }, keyHolder);
 
-        UUID id = keyHolder.getKeyAs(UUID.class);
-        profile.setId(id);
+        profile.setId(keyHolder.getKeyAs(UUID.class));
 
         return profile;
+    }
+
+    @Override
+    public List<ProfileEntity> insertProfileBatch() {
+        List<ProfileEntity> profileBatch = new ArrayList<>();
+
+        IntStream.rangeClosed(1, 32).forEach(value -> {
+            ProfileEntity profile = new ProfileEntity();
+            profile.setId(UUID.randomUUID());
+            profile.setExpireAt(LocalDateTime.now());
+            profile.setVersion(0);
+            profile.setProfile(JSON_DATA);
+            profileBatch.add(profile);
+        });
+
+        jdbcTemplate.update(
+                "INSERT INTO wan_user_profile (id,expire_at,payload,version) "
+                        + "select unnest(?) as id, "
+                        + "       unnest(?) as expire_at, "
+                        + "       unnest(?) as payload, "
+                        + "       unnest(?) as version",
+                ps -> {
+                    List<UUID> id = new ArrayList<>();
+                    List<LocalDateTime> expire_at = new ArrayList<>();
+                    List<String> payload = new ArrayList<>();
+                    List<Integer> version = new ArrayList<>();
+
+                    profileBatch.forEach(profile -> {
+                        id.add(profile.getId());
+                        expire_at.add(profile.getExpireAt());
+                        payload.add(profile.getProfile());
+                        version.add(profile.getVersion());
+                    });
+
+                    ps.setArray(1, ps.getConnection()
+                            .createArrayOf("UUID", id.toArray()));
+                    ps.setArray(2, ps.getConnection()
+                            .createArrayOf("TIMESTAMP", expire_at.toArray()));
+                    ps.setArray(3, ps.getConnection()
+                            .createArrayOf("JSONB", payload.toArray()));
+                    ps.setArray(4, ps.getConnection()
+                            .createArrayOf("INT", version.toArray()));
+                });
+
+        return profileBatch;
     }
 
     @Override
@@ -92,27 +185,26 @@ public class JdbcProfileRepository implements ProfileRepository {
     @Override
     public void deleteProfileById(UUID id) {
         jdbcTemplate.update("DELETE from wan_user_profile WHERE id=? and version=0",
-                ps -> {
-                    ps.setObject(1, id);
-                });
+                ps -> ps.setObject(1, id));
     }
 
     @Override
     public void deleteRandomProfile() {
-        findByRandomId().ifPresent(profileEntity -> deleteProfileById(profileEntity.getId()));
+        findByRandomId().ifPresent(profileEntity ->
+                deleteProfileById(profileEntity.getId()));
     }
 
     @Override
     public List<ProfileEntity> findAll(int limit) {
         return jdbcTemplate.query("SELECT * FROM wan_user_profile limit " + limit,
-                userProfileRowMapper());
+                profileRowMapper());
     }
 
     @Override
     public Optional<ProfileEntity> findFirst() {
         return jdbcTemplate
                 .query("SELECT * FROM wan_user_profile order by id limit 1",
-                        userProfileRowMapper())
+                        profileRowMapper())
                 .stream()
                 .findFirst();
     }
@@ -121,7 +213,7 @@ public class JdbcProfileRepository implements ProfileRepository {
     public Optional<ProfileEntity> findByNextId(UUID id) {
         return jdbcTemplate
                 .query("SELECT * FROM wan_user_profile where id > ? order by id limit 1",
-                        userProfileRowMapper(), id)
+                        profileRowMapper(), id)
                 .stream()
                 .findFirst();
     }
@@ -130,7 +222,7 @@ public class JdbcProfileRepository implements ProfileRepository {
     public Optional<ProfileEntity> findByRandomId() {
         return jdbcTemplate
                 .query("SELECT * FROM wan_user_profile ORDER BY random() limit 1",
-                        userProfileRowMapper())
+                        profileRowMapper())
                 .stream()
                 .findFirst();
     }
@@ -140,7 +232,7 @@ public class JdbcProfileRepository implements ProfileRepository {
         return jdbcTemplate
                 .query("SELECT * FROM wan_user_profile "
                                 + "WHERE (id,version) IN (?,?)",
-                        userProfileRowMapper(),
+                        profileRowMapper(),
                         id, 0)
                 .stream()
                 .findFirst();
@@ -153,7 +245,7 @@ public class JdbcProfileRepository implements ProfileRepository {
 
     public static final Calendar tzUTC = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
-    private RowMapper<ProfileEntity> userProfileRowMapper() {
+    private RowMapper<ProfileEntity> profileRowMapper() {
         return (rs, rowNum) -> {
             ProfileEntity profile = new ProfileEntity();
             profile.setId(rs.getObject("id", UUID.class));
@@ -162,13 +254,8 @@ public class JdbcProfileRepository implements ProfileRepository {
             Timestamp ts = rs.getTimestamp("expire_at", tzUTC);
             profile.setExpireAt(LocalDateTime.ofInstant(Instant.ofEpochMilli(ts.getTime()), ZoneOffset.UTC));
 
-            try {
-                String payload = StreamUtils.copyToString(
-                        rs.getBinaryStream("payload"), Charset.defaultCharset());
-                profile.setProfile(payload);
-            } catch (IOException e) {
-                throw new SQLException(e);
-            }
+            String payload = rs.getString("payload");
+            profile.setProfile(payload);
 
             return profile;
         };

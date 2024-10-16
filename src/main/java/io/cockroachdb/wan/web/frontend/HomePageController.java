@@ -63,8 +63,10 @@ public class HomePageController {
 
                 messagePublisher.convertAndSendDelayed(TopicName.DASHBOARD_REFRESH);
             } else {
-                if (clusterModel.getNodes().size() != model.size()) {
-                    logger.info("Node count differs - forcing refresh");
+                if (!clusterModel.getNodes().isEmpty()
+                    && clusterModel.getNodes().size() != model.size()) {
+                    logger.info("Node count %d != %d - forcing refresh"
+                            .formatted(clusterModel.getNodes().size(), model.size()));
                     messagePublisher.convertAndSendDelayed(TopicName.DASHBOARD_REFRESH);
                 }
             }
