@@ -1,7 +1,5 @@
 #!/bin/bash
 
-moduleselfname="$(basename "$(readlink -f "${BASH_SOURCE[0]}")")"
-
 getopt=$1
 shift
 
@@ -33,6 +31,9 @@ case "${getopt}" in
     open)
         command_open.sh $*
         ;;
+    install)
+        command_install.sh $*
+        ;;
     run-service)
         command_run_service.sh $*
         ;;
@@ -42,9 +43,6 @@ case "${getopt}" in
     stop-service)
         command_stop_service.sh $*
         ;;
-    install)
-        command_install.sh $*
-        ;;
     *)
     if [ -n "${getopt}" ]; then
         echo -e "${red}Unknown command${default}: $0 ${getopt}"
@@ -52,7 +50,7 @@ case "${getopt}" in
     echo -e "${green}Usage: $0 [command]${default}"
     echo -e "${default}Whack-a-node Cluster Admin${default}"
     echo -e ""
-    echo -e "${default}Deployment option: ${green}${DEPLOY_OPTION}${default}"
+    echo -e "${default}Deployment mode: ${green}${DEPLOY_MODE}${default}"
     echo -e ""
     echo -e "${lightyellow}Cluster Commands${default}"
     {

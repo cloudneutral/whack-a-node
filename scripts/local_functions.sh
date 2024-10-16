@@ -1,9 +1,9 @@
 #!/bin/bash
 
 fn_local_start() {
-  fn_print_dots "Starting node ${node} [--sql-addr=port=${host}:${sqlport} --locality=${zone}] in $SH_MODE mode"
+  fn_print_dots "Starting node ${node} [--sql-addr=port=${host}:${sqlport} --locality=${zone}] in $SECURITY_MODE mode"
 
-  case "$SH_MODE" in
+  case "$SECURITY_MODE" in
     secure)
       fn_fail_check ${installdir}/cockroach start \
       --locality=${zone} \
@@ -31,6 +31,9 @@ fn_local_start() {
       --background \
       --insecure
       ;;
+    *)
+      echo "Bad security mode: $SECURITY_MODE"
+      exit 1
   esac
 
   fn_print_ok "Started node ${node}"
@@ -178,7 +181,7 @@ fn_local_pids() {
   ps -ef | grep "cockroach" | grep "sql-addr=" | awk '{print $2,$10,$11,$12,$13}'
 }
 
-fn_node_range() {
-  read -p "Enter node range (1-N): " IN
+fn_local_node_range() {
+  read -p "Enter node numbers (1-N or 1,..): " IN
   nodes=$(echo $IN | awk -v RS='[[:blank:]]|[\n]|[,]' '{max=a[split($0, a ,"-")]; if(max!=0){while(a[1]<=max){print a[1]++}}}')
 }

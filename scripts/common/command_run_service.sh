@@ -11,9 +11,10 @@ fi
 pid=$(ps -ef | grep "java" | grep "whackanode.jar" | awk '{print $2}')
 
 if [ ! -x ${pid} ]; then
-   fn_print_error "Existing whackanode.jar process found - is it running?"
+   fn_print_error "Existing process ${pid} found - is it running?"
    exit 1
 fi
 
 echo java -jar ${APP_JARFILE} ${APP_PARAMS}
+
 java -jar ${APP_JARFILE} ${APP_PARAMS} $*

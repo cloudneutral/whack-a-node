@@ -1,5 +1,5 @@
 --
--- Baseline cluster settings (optional)
+-- Baseline cluster settings for local cluster (optional)
 --
 
 SET CLUSTER SETTING diagnostics.reporting.enabled = false;
@@ -11,7 +11,7 @@ UPSERT into system.locations
 VALUES ('region', 'us-east-1', 37.478397, -76.453077),
        ('region', 'us-east-2', 40.417287, -76.453077),
        ('region', 'us-west-1', 38.837522, -120.895824),
-       ('region', 'us-west-2', 43.804133, -120.554201),
+       ('region', 'us-west-F2', 43.804133, -120.554201),
        ('region', 'ca-central-1', 56.130366, -106.346771),
        ('region', 'eu-central-1', 50.110922, 8.682127),
        ('region', 'eu-north-1', 59.1, 18.3),

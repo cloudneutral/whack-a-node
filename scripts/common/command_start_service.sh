@@ -17,4 +17,4 @@ fi
 
 nohup java -jar ${APP_JARFILE} ${APP_PARAMS} > whackanode-stdout.log 2>&1 &
 
-fn_print_ok "Started service"
+fn_print_ok "Started service - check whackanode-stdout.log"

@@ -1,8 +1,13 @@
 #!/bin/bash
 
-case "$SH_MODE" in
+if [ ! -f ${certsdir}/local_api_key ]; then
+  fn_print_error "No API key found, run: ./cluster-admin login"
+  exit 1
+fi
+
+case "$SECURITY_MODE" in
   secure)
-    apikey=$(<${datadir}/.local_api_key)
+    apikey=$(<${certsdir}/local_api_key)
     # Remove cookie prefix and suffix
     apikey=$(echo ${apikey} | sed -e "s/^session=//" -e 's/;.*$//')
 
@@ -14,6 +19,9 @@ case "$SH_MODE" in
     curl --connect-timeout 5 --max-time 5 --fail-with-body --request GET \
     --url "${ADMIN_URL}/api/v2/nodes/"
     ;;
+  *)
+    echo "Bad security mode: $SECURITY_MODE"
+    exit 1
 esac
 
 if [ $? -eq 0 ]; then

@@ -1,18 +1,23 @@
 #!/bin/bash
 
-case "$SH_MODE" in
+mkdir -p ${datadir}
+
+case "$SECURITY_MODE" in
   secure)
     fn_fail_check ${installdir}/cockroach auth-session login ${DB_USER} \
     --url ${DB_URL} \
     --only-cookie \
-    --certs-dir=${certsdir} > ${datadir}/.local_api_key
+    --certs-dir=${certsdir} > ${certsdir}/local_api_key
     ;;
   insecure)
     fn_fail_check ${installdir}/cockroach auth-session login ${DB_USER} \
     --url ${DB_URL} \
     --only-cookie \
-    --insecure > ${datadir}/.local_api_key
+    --insecure > ${certsdir}/local_api_key
     ;;
+  *)
+    echo "Bad security mode: $SECURITY_MODE"
+    exit 1
 esac
 
-cat "${datadir}/.local_api_key"
+cat "${certsdir}/local_api_key"

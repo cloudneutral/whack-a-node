@@ -1,6 +1,7 @@
 #!/bin/bash
+# Whack-a-node Cluster Admin script
 
-# Do not modify this file (see cluster-admin.cfg)
+#### DO NOT EDIT ####
 
 case "$OSTYPE" in
   darwin*)
@@ -13,28 +14,6 @@ case "$OSTYPE" in
         ;;
 esac
 
-scriptsdir="${rootdir}/scripts"
-configdir="${rootdir}/config"
-installdir="${rootdir}/.binaries"
-certsdir="${rootdir}/.certs"
-datadir="${rootdir}/.datafiles"
-
-source "${configdir}/settings.sh"
-source "${scriptsdir}/core_functions.sh"
-source "${scriptsdir}/core_commands.sh"
-
-case "$DEPLOY_OPTION" in
-  cloud)
-    ;;
-  sh)
-    source "${scriptsdir}/local_functions.sh"
-    source "${scriptsdir}/local_commands.sh"
-    ;;
-  *)
-    echo "Unknown or missing deploy option"
-    exit 1
-esac
-
 if [ ! "$(command -v curl 2> /dev/null)" ]; then
 	echo -e "[ FAIL ] Curl is not installed"
 	exit 1
@@ -45,6 +24,17 @@ if [ "$(whoami)" == "root" ]; then
     exit 1
 fi
 
-mkdir -p ${datadir}
+scriptsdir="${rootdir}/scripts"
+configdir="${rootdir}/config"
+installdir="${rootdir}/.binaries"
+certsdir="${rootdir}/.certs"
+datadir="${rootdir}/.datafiles"
+
+source "${scriptsdir}/core_settings.sh"
+source "${scriptsdir}/core_commands.sh"
+source "${scriptsdir}/core_functions.sh"
+source "${scriptsdir}/common_commands.sh"
+source "${scriptsdir}/local_commands.sh"
+source "${scriptsdir}/local_functions.sh"
 
 core_getopt.sh $*

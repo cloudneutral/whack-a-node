@@ -1,19 +1,21 @@
 #!/bin/bash
 
-fn_local_gen_haproxy() {
-  case "$SH_MODE" in
+if [ ! -f ${configdir}/haproxy.cfg ]; then
+  fn_print_info "No 'haproxy.cfg' found - generating it"
+
+  case "$SECURITY_MODE" in
     secure)
       fn_fail_check ${installdir}/cockroach gen haproxy --certs-dir=${certsdir} --host=${host}:${rpcportbase}
       ;;
     insecure)
       fn_fail_check ${installdir}/cockroach gen haproxy --insecure --host=${host}:${rpcportbase}
       ;;
+    *)
+      echo "Bad security mode: $SECURITY_MODE"
+      exit 1
   esac
-}
 
-if [ ! -f ${configdir}/haproxy.cfg ]; then
-   fn_print_info "No ${configdir}/haproxy.cfg found - generating it"
-   fn_local_gen_haproxy
+  fn_fail_check mv ${rootdir}/haproxy.cfg ${configdir}
 fi
 
 if [ -f .haproxy.pid ]; then

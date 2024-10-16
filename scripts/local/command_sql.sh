@@ -7,7 +7,7 @@ if [ $# -eq 0 ]; then
     port=$option
 fi
 
-case "$SH_MODE" in
+case "$SECURITY_MODE" in
   secure)
     fn_fail_check ${installdir}/cockroach sql \
     --host=${host} --port=${port} \

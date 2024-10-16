@@ -1,8 +1,13 @@
 #!/bin/bash
 
-apikey=$(<${datadir}/.local_api_key)
+if [ ! -f ${certsdir}/local_api_key ]; then
+  fn_print_error "No API key found, run: ./cluster-admin login"
+  exit 1
+fi
 
-case "$SH_MODE" in
+apikey=$(<${certsdir}/local_api_key)
+
+case "$SECURITY_MODE" in
   secure)
     # Doesnt work (401)
     curl --fail-with-body --insecure --request POST \
@@ -13,6 +18,9 @@ case "$SH_MODE" in
     curl --fail-with-body --request POST \
     --url "${ADMIN_URL}/_status/critical_nodes"
     ;;
+  *)
+    echo "Bad security mode: $SECURITY_MODE"
+    exit 1
 esac
 
 if [ $? -eq 0 ]; then

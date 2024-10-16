@@ -6,7 +6,7 @@ if [ $# -eq 0 ]; then
     format="json"
 fi
 
-case "$SH_MODE" in
+case "$SECURITY_MODE" in
   secure)
     fn_fail_check ${installdir}/cockroach node status --all --url ${DB_URL} \
     --certs-dir=${certsdir} \
@@ -17,6 +17,7 @@ case "$SH_MODE" in
     --insecure \
     --format ${format}
     ;;
+  *)
+    echo "Bad security mode: $SECURITY_MODE"
+    exit 1
 esac
-
-

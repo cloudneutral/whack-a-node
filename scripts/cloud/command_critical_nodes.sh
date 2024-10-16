@@ -1,6 +1,11 @@
 #!/bin/bash
 
-apikey=$(<${datadir}/.cloud_api_key)
+if [ ! -f ${certsdir}/cloud_api_key ]; then
+  fn_print_error "No API key found, run: ./cluster-admin login"
+  exit 1
+fi
+
+apikey=$(<${certsdir}/cloud_api_key)
 
 curl --fail-with-body --insecure --request POST \
 --url "${ADMIN_URL}/_status/critical_nodes" \

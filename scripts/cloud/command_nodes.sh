@@ -4,7 +4,13 @@
 #curl --location "https://cockroachlabs.cloud/api/v1/clusters/${CC_CLUSTERID}/nodes" \
 #--header "Authorization: Bearer ${CC_API_KEY}"
 
-apikey=$(<${datadir}/.cloud_api_key)
+if [ ! -f ${certsdir}/cloud_api_key ]; then
+  fn_print_error "No API key found, run: ./cluster-admin login"
+  exit 1
+fi
+
+apikey=$(<${certsdir}/cloud_api_key)
+
 # Remove cookie prefix and suffix
 apikey=$(echo ${apikey} | sed -e "s/^session=//" -e 's/;.*$//')
 
