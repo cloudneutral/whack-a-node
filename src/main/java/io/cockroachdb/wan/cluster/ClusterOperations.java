@@ -13,14 +13,12 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 
@@ -45,30 +43,14 @@ class ClusterOperations implements ClusterRepository {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // Used as fallback
-    private Optional<List<NodeModel>> cache = Optional.empty();
+    private final AtomicReference<Optional<List<NodeModel>>> cachedModels
+            = new AtomicReference<>(Optional.empty());
 
     @Override
     public List<NodeModel> queryNodes() {
         List<NodeModel> models = doQueryNodes();
-        cache = Optional.of(models);
+        this.cachedModels.set(Optional.of(models));
         return models;
-    }
-
-    private List<NodeModel> queryNodesWithFallback() {
-        try {
-            return queryNodes();
-        } catch (CommandException e) {
-            cache.ifPresent(nodeModels -> {
-                logger.warn("Using cached model as fallback");
-                // Mark node status as unknown and keep the rest from last successful query
-                nodeModels.forEach(nodeModel -> {
-                    nodeModel.getNodeStatus().setIsAvailable("false");
-                    nodeModel.getNodeStatus().setIsLive("false");
-                });
-            });
-            return cache.orElseThrow(() -> e);
-        }
     }
 
     private List<NodeModel> doQueryNodes() {
@@ -132,7 +114,9 @@ class ClusterOperations implements ClusterRepository {
 
     @Override
     public NodeModel queryNodeById(Integer id) {
-        return queryNodesWithFallback()
+        cachedModels.get().ifPresent(nodeModels ->
+                logger.warn("Using cached model for node id %s".formatted(id)));
+        return cachedModels.get().orElseGet(this::doQueryNodes)
                 .stream()
                 .filter(node -> node.getNodeDetail().getNodeId().equals(id))
                 .findFirst()
@@ -173,24 +157,6 @@ class ClusterOperations implements ClusterRepository {
             throw new CommandException(StreamUtils.copyToString(barr, Charset.defaultCharset()), code);
         }
         return code;
-    }
-
-    @Async
-    public Future<Integer> disruptNodeAsync(NodeModel nodeModel) {
-        try {
-            return CompletableFuture.completedFuture(disruptNode(nodeModel));
-        } catch (Exception e) {
-            return CompletableFuture.failedFuture(e);
-        }
-    }
-
-    @Async
-    public Future<Integer> recoverNodeAsync(NodeModel nodeModel) {
-        try {
-            return CompletableFuture.completedFuture(recoverNode(nodeModel));
-        } catch (Exception e) {
-            return CompletableFuture.failedFuture(e);
-        }
     }
 
     private int executeProcess(List<String> commands, ByteArrayOutputStream barr) {

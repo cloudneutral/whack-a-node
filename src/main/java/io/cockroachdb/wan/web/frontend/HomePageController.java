@@ -22,8 +22,8 @@ import io.cockroachdb.wan.cluster.CommandException;
 import io.cockroachdb.wan.model.ClusterModel;
 import io.cockroachdb.wan.model.NodeModel;
 import io.cockroachdb.wan.web.api.ClusterController;
-import io.cockroachdb.wan.web.api.model.MessageModel;
-import io.cockroachdb.wan.web.api.model.MessageType;
+import io.cockroachdb.wan.web.model.MessageModel;
+import io.cockroachdb.wan.web.model.MessageType;
 import io.cockroachdb.wan.web.push.SimpMessagePublisher;
 import io.cockroachdb.wan.web.push.TopicName;
 

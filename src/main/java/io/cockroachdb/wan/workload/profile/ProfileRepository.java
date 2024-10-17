@@ -10,7 +10,7 @@ public interface ProfileRepository {
 
     ProfileEntity insertProfileSingleton();
 
-    List<ProfileEntity> insertProfileBatch();
+    List<ProfileEntity> insertProfileBatch(int batchSize);
 
     void updateProfile(ProfileEntity profile);
 
@@ -24,9 +24,9 @@ public interface ProfileRepository {
 
     List<ProfileEntity> findAll(int limit);
 
-    Optional<ProfileEntity> findFirst();
+    Optional<ProfileEntity> findFirst(boolean followerRead);
 
-    Optional<ProfileEntity> findByNextId(UUID id);
+    Optional<ProfileEntity> findByNextId(UUID id, boolean followerRead);
 
     Optional<ProfileEntity> findByRandomId();
 

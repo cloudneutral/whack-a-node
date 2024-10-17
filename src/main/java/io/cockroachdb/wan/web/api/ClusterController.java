@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.cockroachdb.wan.cluster.ClusterRepository;
 import io.cockroachdb.wan.model.ClusterModel;
-import io.cockroachdb.wan.web.api.model.MessageModel;
+import io.cockroachdb.wan.web.model.MessageModel;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;

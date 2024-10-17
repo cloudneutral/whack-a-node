@@ -4,7 +4,8 @@ descriptor=$1
 
 if [ $# -eq 0 ]; then
     echo -e "Expected descriptor path"
-    exit 1
+    exitcode="1"
+    core_exit.sh
 fi
 
 curl --fail-with-body --request PUT \

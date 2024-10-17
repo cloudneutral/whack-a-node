@@ -29,8 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.cockroachdb.wan.util.timeseries.Metrics;
-import io.cockroachdb.wan.web.api.model.WorkloadForm;
-import io.cockroachdb.wan.web.api.model.WorkloadType;
+import io.cockroachdb.wan.web.model.WorkloadForm;
+import io.cockroachdb.wan.web.model.WorkloadType;
 import io.cockroachdb.wan.web.frontend.WorkloadPageController;
 import io.cockroachdb.wan.workload.WorkloadEntity;
 import io.cockroachdb.wan.workload.WorkloadManager;

@@ -25,11 +25,9 @@
                 <hr/>
 
                 <div class="d-inline-grid gap-2 d-md-flex justify-content-md-end">
-<!--
                     <button class="btn btn-sm btn-warning me-md-0" type="button"
                             data-bs-toggle="modal" data-bs-target="#confirmCancelAllModal">Cancel All
                     </button>
--->
                     <button class="btn btn-sm btn-outline-danger me-md-0" type="button"
                             data-bs-toggle="modal" data-bs-target="#confirmDeleteAllModal">Delete All
                     </button>
@@ -105,9 +103,14 @@
                         <th th:text="${aggregatedMetrics.transientFail}" class="transientFail">0</th>
                         <th th:text="${aggregatedMetrics.nonTransientFail}" class="nonTransientFail">0</th>
                         <th>
+<!--
                             <button class="btn btn-sm btn-outline-warning" type="button"
                                     data-bs-toggle="modal" data-bs-target="#confirmCancelAllModal">Cancel
                             </button>
+                            <button class="btn btn-sm btn-outline-danger me-md-0" type="button"
+                                    data-bs-toggle="modal" data-bs-target="#confirmDeleteAllModal">Delete
+                            </button>
+-->
                         </th>
                     </tr>
                     </tfoot>
@@ -134,7 +137,7 @@
                         <label for="workload-type" class="col-form-label">Type of workload:</label>
                         <select th:field="*{workloadType}" id="workload-type" class="form-select"
                                 aria-label="Default select">
-                            <option th:each="wt : ${T(io.cockroachdb.wan.web.api.model.WorkloadType).values()}"
+                            <option th:each="wt : ${T(io.cockroachdb.wan.web.model.WorkloadType).values()}"
                                     th:value="${wt}" th:text="${wt.displayValue}"></option>
                         </select>
 

@@ -1,14 +1,14 @@
 #!/bin/bash
 
-if [ ! -f ${certsdir}/local_api_key ]; then
-  fn_print_error "No API key found, run: ./cluster-admin login"
-  exit 1
-fi
-
-apikey=$(<${certsdir}/local_api_key)
-
 case "$SECURITY_MODE" in
   secure)
+    if [ ! -f ${certsdir}/local_api_key ]; then
+      fn_print_error "No API key found, run: ./cluster-admin login"
+      exit 1
+    fi
+
+    apikey=$(<${certsdir}/local_api_key)
+
     # Doesnt work (401)
     curl --fail-with-body --insecure --request POST \
     --url "${ADMIN_URL}/_status/critical_nodes" \

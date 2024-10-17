@@ -77,7 +77,6 @@ fn_local_kill() {
   kill -KILL ${pid}
 
   fn_print_dots "Waiting for server to die (pid: $pid)"
-
   while kill -0 $pid 2>/dev/null; do
       printf '.'
       sleep 1
@@ -129,7 +128,7 @@ fn_local_select_pid() {
     pid=$(ps -ef | grep "cockroach" | grep "sql-addr=${host}:${port}" | awk '{print $2}')
     if [ -z $pid ]; then
         fn_local_pids
-        fn_print_error "No cockroachdb process found on SQL port ${port} (--sql-addr)"
+        fn_print_error "No cockroachdb process found with SQL port ${port} (--sql-addr)"
         exit 1
     fi
   fi

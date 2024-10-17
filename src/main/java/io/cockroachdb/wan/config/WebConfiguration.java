@@ -29,7 +29,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.util.pattern.PathPatternParser;
 
 import io.cockroachdb.wan.web.api.LinkRelations;
-import io.cockroachdb.wan.web.api.model.WorkloadForm;
+import io.cockroachdb.wan.web.model.WorkloadForm;
 
 @EnableWebMvc
 @EnableHypermediaSupport(type = {

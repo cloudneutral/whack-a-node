@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import io.cockroachdb.wan.web.api.model.WorkloadType;
+import io.cockroachdb.wan.web.model.WorkloadType;
 import io.cockroachdb.wan.workload.WorkloadEntity;
 
 public class ProfileWorkloadsTest extends AbstractIntegrationTest {

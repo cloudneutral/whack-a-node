@@ -27,54 +27,54 @@ import org.springframework.stereotype.Repository;
 public class JdbcProfileRepository implements ProfileRepository {
     private static final String JSON_DATA =
             """
-            [
-              {
-                "_id": "670d522e1ad3f85502f44ecd",
-                "index": 0,
-                "guid": "5a44c0f0-a7a4-4cbc-8bdd-7d550d1e8d2a",
-                "isActive": true,
-                "balance": "$3,972.10",
-                "picture": "http://placehold.it/32x32",
-                "age": 31,
-                "eyeColor": "brown",
-                "name": "Kristi Blackburn",
-                "gender": "female",
-                "company": "INQUALA",
-                "email": "kristiblackburn@inquala.com",
-                "phone": "+1 (897) 482-3250",
-                "address": "793 Columbia Street, Westboro, Illinois, 2347",
-                "about": "Amet aliquip do cupidatat ex incididunt fugiat. Deserunt in pariatur ea do. Occaecat tempor do ad ut do Lorem non mollit occaecat enim occaecat. In non officia tempor amet pariatur est qui pariatur occaecat. Sunt sunt veniam reprehenderit commodo magna id. Consectetur ut ipsum mollit incididunt in amet sunt elit eiusmod irure ex. Pariatur aliquip aliqua voluptate est occaecat irure cillum esse.\\r\\n",
-                "registered": "2015-07-13T02:00:27 -02:00",
-                "latitude": -69.276752,
-                "longitude": 36.555489,
-                "tags": [
-                  "ad",
-                  "commodo",
-                  "do",
-                  "pariatur",
-                  "non",
-                  "tempor",
-                  "consequat"
-                ],
-                "friends": [
-                  {
-                    "id": 0,
-                    "name": "Edwards Richmond"
-                  },
-                  {
-                    "id": 1,
-                    "name": "Cynthia Potter"
-                  },
-                  {
-                    "id": 2,
-                    "name": "Yvonne Fowler"
-                  }
-                ],
-                "greeting": "Hello, Kristi Blackburn! You have 7 unread messages.",
-                "favoriteFruit": "apple"
-              }
-            ]
-            """;
+                    [
+                      {
+                        "_id": "670d522e1ad3f85502f44ecd",
+                        "index": 0,
+                        "guid": "5a44c0f0-a7a4-4cbc-8bdd-7d550d1e8d2a",
+                        "isActive": true,
+                        "balance": "$3,972.10",
+                        "picture": "http://placehold.it/32x32",
+                        "age": 31,
+                        "eyeColor": "brown",
+                        "name": "Kristi Blackburn",
+                        "gender": "female",
+                        "company": "INQUALA",
+                        "email": "kristiblackburn@inquala.com",
+                        "phone": "+1 (897) 482-3250",
+                        "address": "793 Columbia Street, Westboro, Illinois, 2347",
+                        "about": "Amet aliquip do cupidatat ex incididunt fugiat. Deserunt in pariatur ea do. Occaecat tempor do ad ut do Lorem non mollit occaecat enim occaecat. In non officia tempor amet pariatur est qui pariatur occaecat. Sunt sunt veniam reprehenderit commodo magna id. Consectetur ut ipsum mollit incididunt in amet sunt elit eiusmod irure ex. Pariatur aliquip aliqua voluptate est occaecat irure cillum esse.\\r\\n",
+                        "registered": "2015-07-13T02:00:27 -02:00",
+                        "latitude": -69.276752,
+                        "longitude": 36.555489,
+                        "tags": [
+                          "ad",
+                          "commodo",
+                          "do",
+                          "pariatur",
+                          "non",
+                          "tempor",
+                          "consequat"
+                        ],
+                        "friends": [
+                          {
+                            "id": 0,
+                            "name": "Edwards Richmond"
+                          },
+                          {
+                            "id": 1,
+                            "name": "Cynthia Potter"
+                          },
+                          {
+                            "id": 2,
+                            "name": "Yvonne Fowler"
+                          }
+                        ],
+                        "greeting": "Hello, Kristi Blackburn! You have 7 unread messages.",
+                        "favoriteFruit": "apple"
+                      }
+                    ]
+                    """;
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -100,7 +100,7 @@ public class JdbcProfileRepository implements ProfileRepository {
         jdbcTemplate.update(conn -> {
             PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO wan_user_profile (expire_at,payload,version) "
-                            + "VALUES (?,?,?) returning id::uuid",
+                    + "VALUES (?,?,?) returning id::uuid",
                     PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setObject(1, profile.getExpireAt());
             ps.setCharacterStream(2, new StringReader(profile.getProfile()));
@@ -114,10 +114,10 @@ public class JdbcProfileRepository implements ProfileRepository {
     }
 
     @Override
-    public List<ProfileEntity> insertProfileBatch() {
+    public List<ProfileEntity> insertProfileBatch(int batchSize) {
         List<ProfileEntity> profileBatch = new ArrayList<>();
 
-        IntStream.rangeClosed(1, 32).forEach(value -> {
+        IntStream.rangeClosed(1, batchSize).forEach(value -> {
             ProfileEntity profile = new ProfileEntity();
             profile.setId(UUID.randomUUID());
             profile.setExpireAt(LocalDateTime.now());
@@ -128,10 +128,10 @@ public class JdbcProfileRepository implements ProfileRepository {
 
         jdbcTemplate.update(
                 "INSERT INTO wan_user_profile (id,expire_at,payload,version) "
-                        + "select unnest(?) as id, "
-                        + "       unnest(?) as expire_at, "
-                        + "       unnest(?) as payload, "
-                        + "       unnest(?) as version",
+                + "select unnest(?) as id, "
+                + "       unnest(?) as expire_at, "
+                + "       unnest(?) as payload, "
+                + "       unnest(?) as version",
                 ps -> {
                     List<UUID> id = new ArrayList<>();
                     List<LocalDateTime> expire_at = new ArrayList<>();
@@ -161,7 +161,7 @@ public class JdbcProfileRepository implements ProfileRepository {
     @Override
     public void updateProfile(ProfileEntity profile) {
         final String sql = "UPDATE wan_user_profile SET expire_at=?,payload=?,version=? "
-                + "WHERE id=? and version=?";
+                           + "WHERE id=? and version=?";
 
         int rows = jdbcTemplate.update(sql,
                 ps -> {
@@ -201,18 +201,22 @@ public class JdbcProfileRepository implements ProfileRepository {
     }
 
     @Override
-    public Optional<ProfileEntity> findFirst() {
+    public Optional<ProfileEntity> findFirst(boolean followerRead) {
         return jdbcTemplate
-                .query("SELECT * FROM wan_user_profile order by id limit 1",
+                .query(followerRead ? "SELECT * FROM wan_user_profile "
+                                      + "as of system time follower_read_timestamp() order by id limit 1" :
+                                "SELECT * FROM wan_user_profile order by id limit 1",
                         profileRowMapper())
                 .stream()
                 .findFirst();
     }
 
     @Override
-    public Optional<ProfileEntity> findByNextId(UUID id) {
+    public Optional<ProfileEntity> findByNextId(UUID id, boolean followerRead) {
         return jdbcTemplate
-                .query("SELECT * FROM wan_user_profile where id > ? order by id limit 1",
+                .query(followerRead ? "SELECT * FROM wan_user_profile "
+                                      + "as of system time follower_read_timestamp() where id > ? order by id limit 1" :
+                                "SELECT * FROM wan_user_profile where id > ? order by id limit 1",
                         profileRowMapper(), id)
                 .stream()
                 .findFirst();
@@ -231,7 +235,7 @@ public class JdbcProfileRepository implements ProfileRepository {
     public Optional<ProfileEntity> findById(UUID id) {
         return jdbcTemplate
                 .query("SELECT * FROM wan_user_profile "
-                                + "WHERE (id,version) IN (?,?)",
+                       + "WHERE (id,version) IN (?,?)",
                         profileRowMapper(),
                         id, 0)
                 .stream()

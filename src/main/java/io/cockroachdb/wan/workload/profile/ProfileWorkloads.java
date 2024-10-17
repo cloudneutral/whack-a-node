@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import io.cockroachdb.wan.web.api.model.WorkloadType;
+import io.cockroachdb.wan.web.model.WorkloadType;
 import io.cockroachdb.wan.workload.WorkloadEntity;
 import io.cockroachdb.wan.workload.WorkloadManager;
 
@@ -50,11 +50,11 @@ public class ProfileWorkloads {
      *
      * @return next profile
      */
-    private Optional<ProfileEntity> nextProfile() {
+    private Optional<ProfileEntity> findNextProfile(boolean followerRead) {
         latest.ifPresentOrElse(profileEntity -> {
-            latest = profileRepository.findByNextId(profileEntity.getId());
+            latest = profileRepository.findByNextId(profileEntity.getId(), followerRead);
         }, () -> {
-            latest = profileRepository.findFirst();
+            latest = profileRepository.findFirst(followerRead);
         });
         return latest;
     }
@@ -81,14 +81,15 @@ public class ProfileWorkloads {
                     case profile_batch_insert -> createBatchInsertWorkload();
                     case profile_update -> createUpdateWorkload();
                     case profile_delete -> createDeleteWorkload();
-                    case profile_read -> createReadWorkload();
+                    case profile_read -> createReadWorkload(false);
+                    case profile_follower_read -> createReadWorkload(true);
                     case profile_scan -> createScanWorkload();
                     case select_one -> createSelectOneWorkload();
                     case random_wait -> createRandomSleepWorkload();
                     case fixed_wait -> createFixedSleepWorkload();
                 };
         return workloadManager
-                .addWorkload(callable, duration, workloadType.getDisplayValue());
+                .addWorkload(callable, duration, workloadType);
     }
 
     private Callable<?> createRandomSleepWorkload() {
@@ -119,7 +120,7 @@ public class ProfileWorkloads {
 
     private Callable<?> createBatchInsertWorkload() {
         return () -> {
-            profileRepository.insertProfileBatch();
+            profileRepository.insertProfileBatch(32);
             return 0;
         };
     }
@@ -129,7 +130,7 @@ public class ProfileWorkloads {
 
         return () -> {
             transactionTemplate.executeWithoutResult(transactionStatus -> {
-                nextProfile().ifPresent(profileEntity -> {
+                findNextProfile(false).ifPresent(profileEntity -> {
                     profileRepository.updateProfile(profileEntity);
                 });
             });
@@ -142,16 +143,16 @@ public class ProfileWorkloads {
 
         return () -> {
             transactionTemplate.executeWithoutResult(transactionStatus -> {
-                nextProfile().ifPresent(profileEntity ->
+                findNextProfile(false).ifPresent(profileEntity ->
                         profileRepository.deleteProfileById(profileEntity.getId()));
             });
             return 0;
         };
     }
 
-    private Callable<?> createReadWorkload() {
+    private Callable<?> createReadWorkload(boolean followerRead) {
         return () -> {
-            nextProfile();
+            findNextProfile(followerRead);
             return 0;
         };
     }

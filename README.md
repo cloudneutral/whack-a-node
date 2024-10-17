@@ -13,10 +13,10 @@
   * [Install the JDK](#install-the-jdk)
   * [Clone the project](#clone-the-project)
 * [Download artifact](#download-artifact)
-* [Configuration](#configuration)
 * [Running](#running)
-  * [Local Cluster Configuration](#local-cluster-configuration)
   * [CockroachDB Cloud Configuration](#cockroachdb-cloud-configuration)
+  * [Local Cluster Configuration](#local-cluster-configuration)
+* [Appendix: Configuration](#appendix-configuration)
 <!-- TOC -->
 
 # About
@@ -76,7 +76,7 @@ own risk and Cockroach Labs makes no guarantees or warranties about its operatio
 
 See [MIT](LICENSE.txt) for terms and conditions.
 
-# Building 
+# Building and Running
 
 The only building needed is the visualization spring boot app that also 
 acts as the control plane and database client.
@@ -105,7 +105,7 @@ Ubuntu:
 
     git clone git@github.com:cloudneutral/whack-a-node.git && cd whack-a-node
 
-# Download artifact
+## Download artifact
 
 If you prefer to use a packaged artifact (release or snapshot) rather than building, 
 see [GitHub Packages](https://github.com/cloudneutral/whack-a-node/packages/2285983?version=1.0.0-SNAPSHOT).
@@ -115,7 +115,87 @@ Scroll to the current `TAR.GZ` file and copy the download URL, then run:
     curl -o whack-a-node.tar.gz <paste-url-here>
     tar xvf whack-a-node.tar.gz && cd whack-a-node
 
-# Configuration
+# Running
+
+These instructions cover creating a local, self-hosted cluster or using CockroachDB Cloud.
+
+## CockroachDB Cloud Configuration
+
+1. To get started with an existing CockroachDB Cloud cluster, run:
+    
+       ./cluster-admin 
+
+    Pick option `cloud`. Alternatively, edit the existing `settings.cfg`
+   and change `DEPLOY_MODE` to `cloud` and `SECURITY_MODE` to `cloud`.
+
+1. (optional) Edit [config/settings-cloud.cfg](config/settings-cloud.cfg) and change the credentials to match your cluster.
+
+    | Key              | Value                                                                                                                                           | Example                                                 |
+    |------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------|
+    | CC_CLUSTERID     | Your cluster UUID, i.e: (https://cockroachlabs.cloud/cluster/<CLUSTER_ID>)                                                                      | (see CC console)                                        | 
+    | CC_SSL_ROOT_CERT | The CA root certificate for your [cluster](https://cockroachlabs.cloud/) stored locally.                                                        | (see CC console)                                        | 
+    | CC_API_KEY       | Create an [API key](https://www.cockroachlabs.com/docs/cockroachcloud/managing-access#create-api-keys) for the cluster and copy the secret key. | (secret key)                                            | 
+    | ADMIN_URL        | DB Console URL.                                                                                                                                 | https://admin-my-cluster-qmg.cockroachlabs.cloud:8080   | 
+    | DB_HOST          | Database host name.                                                                                                                             | my-cluster-qmg.aws-eu-north-1.cockroachlabs.cloud:26257 | 
+    | DB_USER          | Database user name.                                                                                                                             | craig                                                   | 
+    | DB_PASSWORD      | Database user password                                                                                                                          | cockroach                                               | 
+
+1. Install a CockroachDB binary, login to get an API access token and start the service:
+
+       ./cluster-admin install
+       ./cluster-admin login
+       ./cluster-admin start-service
+       ./cluster-admin open
+
+## Local Cluster Configuration
+
+1. To get started with a local cluster, run:
+
+       ./cluster-admin 
+
+   Pick option `secure` or `insecure`. Alternatively, edit the existing `settings.cfg`
+   and change `DEPLOY_MODE` to `local` and `SECURITY_MODE` to `secure|insecure`.
+
+1. (optional) Edit [config/settings-secure.cfg](config/settings-secure.cfg)
+   or [config/settings-insecure.cfg](config/settings-insecure.cfg) and change the details if needed.
+   The default settings are usually sufficient unless you have conflicting
+   network ports occupied.
+
+1. (optional) Edit [config/settings-local.cfg](config/settings-local.cfg) to tailor cluster listen ports,
+   locality flags etc.
+
+1. (optional) Edit [config/haproxy.cfg](config/haproxy.cfg) to mirror any listen port changes you make. This
+   configuration is pre-configured for up to 18 local nodes but HAProxy automatically adjusts to anything less.
+
+1. Install a CockroachDB binary, start the cluster, load balancer and the service:
+   2. [Secure mode]
+   
+          ./cluster-admin install
+          ./cluster-admin certs
+          ./cluster-admin start-all
+          ./cluster-admin init
+          ./cluster-admin start-lb
+          ./cluster-admin start-service
+          ./cluster-admin login
+          ./cluster-admin open
+   3. [Insecure mode]
+
+          ./cluster-admin install
+          ./cluster-admin start-all
+          ./cluster-admin init
+          ./cluster-admin start-lb
+          ./cluster-admin start-service
+          ./cluster-admin open
+
+To shut things down, run the inverse:
+
+    ./cluster-admin stop-service
+    ./cluster-admin stop-lb
+    ./cluster-admin stop-all
+
+To see the full menu of commands, just run `./cluster-admin`. 
+
+# Appendix: Configuration
 
 Every aspect of whack-a-node can be configured through the files available in the `config` directory:
 
@@ -126,85 +206,8 @@ Every aspect of whack-a-node can be configured through the files available in th
 1. [settings-service.sh](config/settings-service.cfg) - Settings for the whack-a-node service.
 1. [haproxy.cfg](config/haproxy.cfg) - HAProxy configuration for local CockroachDB cluster.
 1. [init.sql](config/init.sql) - Init SQL statements (optional).
-  
-More details are found in the configuration file comments. 
 
-# Running
-
-These instructions cover creating a local, self-hosted cluster or using CockroachDB Cloud.
-
-## Local Cluster Configuration
-
-1. To get started with a local cluster, run:
-
-       ./cluster-admin 
-
-   Pick option `secure` or `insecure`. Alternatively, edit or delete the existing `settings.cfg`
-   and change `DEPLOY_MODE` to `secure|insecure`.
-
-1. (optional) Edit [config/settings-secure.cfg](config/settings-secure.cfg) 
-or [config/settings-insecure.cfg](config/settings-insecure.cfg) and change the details if needed.
-The default settings are usually sufficient unless you have conflicting 
-network ports occupied.
-
-1. (optional) Edit [config/settings-local.cfg](config/settings-local.cfg) to tailor cluster listen ports, 
-locality flags etc.
-
-1. (optional) Edit [config/haproxy.cfg](config/haproxy.cfg) to mirror any listen port changes you make. This 
-configuration is pre-configured for up to 18 local nodes but HAProxy automatically adjusts to anything less.
-
-1. [Secure mode] Install a CockroachDB binary, start the cluster, load balancer and the app:
-
-       ./cluster-admin install
-       ./cluster-admin certs
-       ./cluster-admin start-all
-       ./cluster-admin init
-       ./cluster-admin start-lb
-       ./cluster-admin start-service
-       ./cluster-admin login
-       ./cluster-admin open
-
-1. [Insecure mode] Install a CockroachDB binary, start the cluster, load balancer and the app:
-
-       ./cluster-admin install
-       ./cluster-admin start-all
-       ./cluster-admin init
-       ./cluster-admin start-lb
-       ./cluster-admin start-service
-       ./cluster-admin open
-
-Run the inverse to shut things down:
-
-    ./cluster-admin stop-service
-    ./cluster-admin stop-lb
-    ./cluster-admin stop-all
-
-## CockroachDB Cloud Configuration
-
-1. To get started with an existing CockroachDB Cloud cluster, run:
-    
-       ./cluster-admin 
-
-    Pick option `cloud`. Alternatively, edit or delete the existing `settings.cfg`
-    and change `DEPLOY_MODE` to `cloud`.
-1. Edit [config/settings-cloud.cfg](config/settings-cloud.cfg) and change the credentials to match your cluster.
-
-    | Key              | Value                                                                                                                                           | Example                                                 |
-    |------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------|
-    | CC_CLUSTERID     | Your cluster UUID, i.e: (https://cockroachlabs.cloud/cluster/<CLUSTER_ID>)                                                                      | (see CC console)                                        | 
-    | CC_SSL_ROOT_CERT | The CA root certificate for your [cluster](https://cockroachlabs.cloud/) stored locally.                                                        | (see CC console)                                        | 
-    | CC_API_KEY       | Create an [API key](https://www.cockroachlabs.com/docs/cockroachcloud/managing-access#create-api-keys) for the cluster and copy the secret key. | (secret key)                                            | 
-    | ADMIN_URL        | DB Console URL.                                                                                                                                 | https://admin-my-cluster-qmg.cockroachlabs.cloud:8080   | 
-    | DB_HOST          | Database host name (pick closest region).                                                                                                       | my-cluster-qmg.aws-eu-north-1.cockroachlabs.cloud:26257 | 
-    | DB_USER          | Database user name.                                                                                                                             | craig                                                   | 
-    | DB_PASSWORD      | Database user password                                                                                                                          | cockroach                                               | 
-
-1. Install a CockroachDB binary, login and start the app:
-
-       ./cluster-admin install
-       ./cluster-admin login
-       ./cluster-admin start-service
-       ./cluster-admin open
+More details are found in the configuration file comments.
 
 ---
 

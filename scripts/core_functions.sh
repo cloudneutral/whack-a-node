@@ -102,6 +102,16 @@ fn_print_ok(){
   echo -en "\n"
 }
 
+fn_print_yellow(){
+  echo -en "${creeol}${yellow}$*${default}"
+	echo -en "\n"
+}
+
+fn_print_green(){
+  echo -en "${creeol}${green}$*${default}"
+	echo -en "\n"
+}
+
 fn_continueYesNo() {
   echo -e "$1"
   while true; do

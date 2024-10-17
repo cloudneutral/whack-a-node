@@ -19,7 +19,8 @@ import org.springframework.stereotype.Component;
 import io.cockroachdb.wan.cluster.NotFoundException;
 import io.cockroachdb.wan.util.timeseries.DataPoint;
 import io.cockroachdb.wan.util.timeseries.Metrics;
-import io.cockroachdb.wan.web.api.model.MessageModel;
+import io.cockroachdb.wan.web.model.MessageModel;
+import io.cockroachdb.wan.web.model.WorkloadType;
 import io.cockroachdb.wan.web.push.SimpMessagePublisher;
 import io.cockroachdb.wan.web.push.TopicName;
 
@@ -104,7 +105,7 @@ public class WorkloadManager {
                 .build();
     }
 
-    public <V> WorkloadEntity addWorkload(Callable<V> callable, Duration duration, String title) {
+    public <V> WorkloadEntity addWorkload(Callable<V> callable, Duration duration, WorkloadType workloadType) {
         final Instant stopTime = Instant.now().plus(duration);
 
         Metrics metrics = Metrics.empty();
@@ -117,7 +118,7 @@ public class WorkloadManager {
         WorkloadEntity workload = new WorkloadEntity(
                 monotonicIdGenerator.incrementAndGet(),
                 stopTime,
-                title,
+                workloadType.getDisplayValue(),
                 future,
                 metrics);
 

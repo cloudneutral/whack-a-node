@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.view.RedirectView;
 
 import io.cockroachdb.wan.web.api.WorkloadController;
-import io.cockroachdb.wan.web.api.model.WorkloadForm;
-import io.cockroachdb.wan.web.api.model.WorkloadType;
+import io.cockroachdb.wan.web.model.WorkloadForm;
+import io.cockroachdb.wan.web.model.WorkloadType;
 import io.cockroachdb.wan.workload.WorkloadManager;
 
 @Controller
@@ -34,7 +34,7 @@ public class WorkloadPageController {
     public Callable<String> workloadPage(Model model) {
         WorkloadForm form = new WorkloadForm();
         form.setDuration("00:15");
-        form.setWorkloadType(WorkloadType.random_wait);
+        form.setWorkloadType(WorkloadType.profile_insert);
 
         model.addAttribute("adminUrl", this.adminUrl);
         model.addAttribute("form", form);

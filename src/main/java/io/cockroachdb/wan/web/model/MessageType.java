@@ -1,4 +1,4 @@
-package io.cockroachdb.wan.web.api.model;
+package io.cockroachdb.wan.web.model;
 
 public enum MessageType {
     information,

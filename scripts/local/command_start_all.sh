@@ -16,7 +16,12 @@ do
     join=${host}:${port1},${host}:${port2},${host}:${port3}
     mempool="10%"
 
-    echo -e "n${node} [--sql-addr=port=${host}:${sqlport}, --locality=${zone}]"
+    local pid=$(ps -ef | grep "cockroach" | grep "sql-addr=${host}:${sqlport}" | awk '{print $2}')
+    if [ -z $pid ]; then
+      fn_print_yellow "n${node} [--sql-addr=port=${host}:${sqlport}, --locality=${zone}] - STOPPED"
+    else
+      fn_print_green "n${node} [--sql-addr=port=${host}:${sqlport}, --locality=${zone}] - RUNNING (${pid})"
+    fi
 done
 
 fn_print_info "Start up to ${#LOCALITY_ZONE[@]} nodes in '$SECURITY_MODE' mode"
